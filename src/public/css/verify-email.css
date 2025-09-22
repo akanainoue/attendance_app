@@ -1,0 +1,42 @@
+.verify-container {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 30px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.verify-message {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.verify-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: #ddd;
+    border-radius: 8px;
+    border: 1px solid #999;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
+    align-self: center;
+}
+
+.verify-button:hover {
+    background-color: #ddd;
+}
+
+.resend-link {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+}

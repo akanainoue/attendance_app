@@ -1,0 +1,185 @@
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem
+}
+
+.nav a {
+  color: #fff;
+  text-decoration: none;
+  opacity: .9
+}
+
+.nav a:hover {
+  opacity: 1
+}
+
+.logout-form button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  opacity: .9
+}
+
+.logout-form button:hover {
+  opacity: 1
+}
+
+/* Main */
+.main {
+  min-block-size: calc(100dvh - 64px);
+  display: grid;
+  place-items: center;
+  padding-block: 56px
+}
+
+.center-stack {
+  display: grid;
+  justify-items: center;
+  gap: 22px
+}
+
+/* Chip / Date / Clock */
+.chip {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background-color: #d9d9de;
+  color: #525252;
+  font-size: 14px;
+  letter-spacing: .04em
+}
+
+.page-date {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: .04em
+}
+
+.big-clock {
+  font-size: 90px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  padding-bottom: 30px;
+}
+
+/* Buttons */
+.actions {
+  display: grid;
+  place-items: center
+}
+
+.row-buttons {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  justify-content: center
+}
+
+.btn-primary,
+.btn-ghost {
+  min-inline-size: 220px;
+  block-size: 56px;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .3em;
+  transition: filter .15s, transform .05s, background-color .15s, color .15s, border-color .15s;
+}
+
+.btn-primary {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+  cursor: pointer
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05)
+}
+
+.btn-primary:active {
+  transform: translateY(1px)
+}
+
+.btn-ghost {
+  background: #fff;
+  color: #111;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .04);
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  background: #f6f6f7;
+  border-color: #d9d9de
+}
+
+.btn-ghost:active {
+  transform: translateY(1px)
+}
+
+/* Done message */
+.done-message {
+  margin-top: 24px;
+  color: #222;
+  font-weight: 700;
+  letter-spacing: .08em
+}
+
+/* 状態ごとの微調整（必要に応じて色を変えるならここで） */
+body.state-working .btn-primary {
+  background: #111
+}
+
+body.state-breaking .btn-ghost {
+  background: #fff
+}
+
+body.state-done .chip {
+  color: #666
+}
+
+/* Messages */
+.flash {
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #222;
+  text-align: center
+}
+
+.errors {
+  list-style: none;
+  color: #c92a2a;
+  font-size: 14px;
+  text-align: center;
+  display: grid;
+  gap: 4px
+}
+
+/* Responsive */
+@media (max-width:480px) {
+  .brand-text {
+    font-size: 18px
+  }
+
+  .page-date {
+    font-size: 22px
+  }
+
+  .big-clock {
+    font-size: 72px
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    min-inline-size: 200px;
+    block-size: 52px;
+    font-size: 18px
+  }
+}

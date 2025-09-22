@@ -1,0 +1,233 @@
+/* layouts.app / common.css を上書きしない前提の個別スタイル */
+
+:root {
+    --bg: #f2f2f5;
+    --text: #0b0b0c;
+    --line: #e5e5ea;
+    --card: #fff;
+}
+
+body {
+    color: var(--text);
+    background: var(--bg);
+}
+
+.header .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.header .nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+}
+
+.header .nav a:hover,
+.header .nav a.active {
+    opacity: 1;
+}
+
+.header .logout-form {
+    margin: 0;
+}
+
+.header .logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    opacity: .9;
+}
+
+.header .logout-form button:hover {
+    opacity: 1;
+}
+
+.container {
+    width: min(1100px, 92%);
+    margin-inline: auto;
+}
+
+.req-main {
+    padding-block: 32px 80px;
+}
+
+/* タイトル（左の縦線） */
+.page-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .05em;
+    margin: 12px 0 18px;
+    display: flex;
+    gap: .6rem;
+    align-items: center;
+}
+
+.page-title::before {
+    content: "";
+    inline-size: 6px;
+    block-size: 22px;
+    background: #000;
+    border-radius: 3px;
+}
+
+/* タブ */
+.tabs {
+    display: flex;
+    gap: 56px;
+    padding-left: 8px;
+}
+
+.tab {
+    position: relative;
+    padding: 10px 0;
+    font-weight: 700;
+    color: #111;
+    text-decoration: none;
+}
+
+.tab.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -11px;
+    height: 3px;
+    background: #111;
+    border-radius: 2px;
+}
+
+.tabs-divider {
+    height: 1px;
+    background: var(--line);
+    margin: 14px 0 18px;
+}
+
+/* カード／テーブル */
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+.sheet {
+    padding: 10px;
+    overflow: auto;
+}
+
+.req-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.req-table thead th {
+    text-align: left;
+    font-size: 13px;
+    color: #666;
+    font-weight: 700;
+    padding: 10px 14px;
+}
+
+.req-table tbody tr {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.req-table tbody td {
+    padding: 14px;
+    font-size: 14px;
+    border-bottom: 1px solid transparent;
+}
+
+.req-table tbody td:first-child {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.req-table tbody td:last-child {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.mono {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: .03em;
+}
+
+.ellipsis {
+    max-width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 状態バッジ */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #f7f7f9;
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 詳細ボタンをヘッダ「詳細」の真下に揃える（センター） */
+.req-table thead th:last-child {
+    text-align: center;
+}
+
+.col-detail {
+    text-align: center;
+}
+
+.link-detail {
+    display: inline-block;
+    min-width: 56px;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #f7f7f9;
+    border: 1px solid var(--line);
+    color: #111;
+    font-size: 13px;
+}
+
+.link-detail:hover {
+    background: #efeff3;
+}
+
+/* Responsive */
+@media (max-width:640px) {
+    .req-table thead {
+        display: none;
+    }
+
+    .req-table,
+    .req-table tbody,
+    .req-table tr,
+    .req-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .req-table tbody tr {
+        margin-bottom: 10px;
+    }
+
+    .req-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .col-detail {
+        justify-content: flex-start;
+    }
+}

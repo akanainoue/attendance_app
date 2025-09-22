@@ -1,0 +1,13 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: black;
+    height: 60px;
+    align-items: center;
+    padding: 10px 16px;
+}
+
+main {
+    margin: 0 auto
+}

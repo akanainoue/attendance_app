@@ -1,0 +1,468 @@
+/* reset/sanitize + layouts.app/common.css を前提に、衝突しない範囲で装飾 */
+
+/* :root {
+    --bg: #f2f2f5;
+    --text: #0b0b0c;
+    --line: #e5e5ea;
+    --card: #fff;
+    --muted: #8b8b93;
+    --accent: #111;
+    --field-width: 520px;
+} */
+
+/* ヘッダーの.nav（白リンク）だけ補助。layouts.app の .header は上書きしない */
+/* .header .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.header .nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+}
+
+.header .nav a:hover {
+    opacity: 1;
+}
+
+.header .logout-form {
+    margin: 0;
+}
+
+.header .logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    opacity: .9;
+}
+
+.header .logout-form button:hover {
+    opacity: 1;
+} */
+
+/* レイアウト */
+/* .container {
+    width: min(960px, 92%);
+    margin-inline: auto;
+}
+
+.detail-main {
+    padding-block: 32px 80px;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .05em;
+    margin: 12px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.page-title::before {
+    content: "";
+    inline-size: 6px;
+    block-size: 22px;
+    background: #000;
+    border-radius: 3px;
+} */
+
+/* カード */
+/* .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+}
+
+.detail-card {
+    padding: 0;
+    overflow: hidden;
+    max-width: 900px;
+    margin-inline: auto;
+}
+
+/* 行 */
+/* .detail-card .row {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    align-items: center;
+    padding: 18px 22px;
+    border-top: 1px solid var(--line);
+}
+
+.detail-card .row:first-child {
+    border-top: none;
+}
+
+.label {
+    color: #6b6b72;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-align: right;
+    padding-right: 16px;
+}
+
+.value {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-self: center;
+        /* 2列目の中で中央寄せ */
+    /* inline-size: var(--field-width); */
+        /* 全行で同じ幅に */
+/* }  */
+
+/* .mono {
+    font-weight: 700;
+    letter-spacing: .06em;
+}
+
+.date-split .year {
+    margin-right: 28px;
+    color: #333;
+    font-weight: 700;
+}
+
+.date-split .md {
+    font-weight: 700;
+} */
+
+/* 時刻入力（白いピル） */
+/* .time-range {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.time-input {
+    width: 120px;
+    height: 36px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    font-weight: 700;
+    letter-spacing: .06em;
+}
+
+.sep {
+    color: #777;
+}
+
+.note-input {
+    width: min(600px, 100%);
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    resize: vertical;
+}
+
+/* ボタン */
+/* .actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 18px 22px 24px;
+    border-top: 1px solid var(--line);
+}
+
+.btn-primary {
+    min-width: 140px;
+    height: 48px;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: .2em;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+    transition: filter .15s, transform .05s;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.05);
+} */
+
+/* .btn-primary:active {
+    transform: translateY(1px);
+} */ 
+
+/* メッセージ */
+.errors {
+    margin-top: 14px;
+    color: #c92a2a;
+    list-style: none;
+    display: grid;
+    gap: 4px;
+}
+
+.flash {
+    margin-top: 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+/* スマホ */
+/* @media (max-width:640px) {
+    :root {
+        --field-width: 100%;
+    }
+    .detail-card .row {
+        grid-template-columns: 120px 1fr;
+        padding: 14px;
+    }
+
+    .time-input {
+        width: 120px;
+    }
+
+    .value {
+        justify-self: stretch;
+        inline-size: 100%;
+    }
+
+    .actions {
+        padding: 14px;
+    }
+} */
+
+/* public/css/attendance-detail.css  — layouts.app / common.css を尊重 */
+
+:root {
+    --bg: #f2f2f5;
+    --line: #e5e5ea;
+    --card: #fff;
+
+    /* === 固定レイアウト寸法（必要ならここだけ微調整） === */
+    --card-w: 920px;
+    /* 白カードの外幅 */
+    --label-w: 140px;
+    /* 左ラベル列の幅（例: 名前/日付…） */
+    --field-w: 520px;
+    /* 入力ブロックの横幅（全行で揃える） */
+    --time-w: 120px;
+    /* time入力の幅 */
+    --gap: 24px;
+    /* 入力と「〜」の間隔 */
+}
+
+/* ヘッダーのナビだけ調整（既存ヘッダーは上書きしない） */
+.header .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem
+}
+
+.header .nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9
+}
+
+.header .nav a:hover {
+    opacity: 1
+}
+
+.header .logout-form {
+    margin: 0
+}
+
+.header .logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    opacity: .9
+}
+
+.header .logout-form button:hover {
+    opacity: 1
+}
+
+/* ベース */
+.detail-main {
+    padding-block: 32px 80px;
+    background: var(--bg)
+}
+
+.container {
+    width: min(1100px, 92%);
+    margin-inline: auto
+}
+
+/* タイトル（左の縦バー） */
+.page-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .05em;
+    margin: 12px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: .6rem
+}
+
+.page-title::before {
+    content: "";
+    inline-size: 6px;
+    block-size: 22px;
+    background: #000;
+    border-radius: 3px
+}
+
+/* カード */
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px
+}
+
+.detail-card {
+    width: var(--card-w);
+    margin: 0 auto;
+    overflow: hidden
+}
+
+/* 行（2カラム・高さ均一） */
+.detail-card .row {
+    display: grid;
+    grid-template-columns: var(--label-w) 1fr;
+    /* 左ラベル固定・右内容 */
+    align-items: center;
+    min-height: 80px;
+    padding: 0 24px;
+    border-top: 1px solid var(--line);
+}
+
+.detail-card .row:first-child {
+    border-top: none
+}
+
+.label {
+    color: #6b6b72;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-align: left;
+    /* 画像に合わせて左寄せ */
+    display: flex;
+    align-items: center
+}
+
+/* 右側の内容ブロックは横幅を固定し中央へ */
+.value {
+    width: var(--field-w);
+    margin-inline: auto;
+    /* カード中央へ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 日付行：左右に分割して中央寄せ */
+.date-split {
+    width: var(--field-w);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 左右で均等 */
+    place-items: center;
+    font-weight: 700;
+}
+
+.date-split .year {
+    margin-right: 0
+}
+
+/* 余白なしで中央対称 */
+
+.mono {
+    font-weight: 700;
+    letter-spacing: .06em
+}
+
+/* 時刻行：入力×2 + 「〜」を中央で等間隔配置 */
+.time-range {
+    width: var(--field-w);
+    display: grid;
+    grid-template-columns: var(--time-w) auto var(--time-w);
+    align-items: center;
+    column-gap: var(--gap);
+    justify-items: center;
+}
+
+.time-input {
+    width: var(--time-w);
+    height: 36px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-align: center;
+}
+
+.sep {
+    color: #777
+}
+
+/* 備考（列幅いっぱいで中央に） */
+.note-input {
+    min-width: 310px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    resize: vertical;
+}
+
+/* 下部ボタン：カード右下に配置 */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 22px 24px 26px;
+    border-top: 1px solid var(--line);
+}
+
+.btn-primary {
+    min-width: 140px;
+    height: 48px;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: .2em;
+    cursor: pointer;
+}
+
+/* スマホ：等価に縮める */
+@media (max-width:640px) {
+    :root {
+        --card-w: 100%;
+        --field-w: 100%;
+        --label-w: 120px;
+        --time-w: 110px;
+    }
+
+    .detail-card {
+        border-radius: 12px
+    }
+
+    .detail-card .row {
+        min-height: 72px;
+        padding: 0 16px
+    }
+
+    .value,
+    .date-split,
+    .time-range {
+        width: 100%
+    }
+}
