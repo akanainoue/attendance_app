@@ -1,0 +1,160 @@
+/* レイアウトは layouts.app / common.css を前提 */
+.main .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 12px 0 20px;
+    padding-left: 16px;
+    border-left: 6px solid #000;
+}
+
+/* タブ */
+.tabs {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    margin: 10px 0 14px;
+    padding: 0 8px 12px;
+    border-bottom: 1px solid #cfcfcf;
+}
+
+.tabs .tab {
+    position: relative;
+    padding: 6px 4px;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+}
+
+.tabs .tab.active {
+    color: #000;
+}
+
+.tabs .tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -13px;
+    height: 2px;
+    background: #000;
+    border-radius: 2px;
+}
+
+/* カード（表） */
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    border: 1px solid #eee;
+}
+
+/* テーブル */
+.req-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: 14px;
+}
+
+.req-table thead th {
+    text-align: left;
+    font-weight: 700;
+    color: #333;
+    background: #fafafa;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.req-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #222;
+    background: #fff;
+}
+
+/* カラム幅の調整（画像の見た目に合わせて） */
+.col-status {
+    width: 110px;
+}
+
+.col-name {
+    width: 140px;
+}
+
+.col-target {
+    width: 150px;
+}
+
+.col-reason {
+    width: auto;
+}
+
+.col-applied {
+    width: 150px;
+}
+
+.col-detail {
+    width: 80px;
+    text-align: left;
+}
+
+.req-table .empty {
+    text-align: center;
+    color: #888;
+    padding: 28px 0;
+}
+
+/* 「詳細」リンク */
+.link-detail {
+    display: inline-block;
+    padding: 4px 6px;
+    font-size: 13px;
+    text-decoration: none;
+    color: #000;
+    border-radius: 4px;
+}
+
+.link-detail:hover {
+    text-decoration: underline;
+}
+
+/* ヘッダーナビと整合（common.css を想定） */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+}
+
+.nav a.active {
+    opacity: 1;
+}
+
+.nav a:hover {
+    opacity: 1;
+}
+
+.logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: .9;
+}
+
+.logout-form button:hover {
+    opacity: 1;
+}

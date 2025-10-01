@@ -1,0 +1,345 @@
+/* ===== 基本（PCレイアウト） ===== */
+.review-main {
+    margin: 0 auto;
+}
+
+.review-container {
+    max-width: 960px;
+    margin: 28px auto 56px;
+    padding: 0 16px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 24px 0 20px;
+    position: relative;
+}
+
+.page-title::before {
+    content: "";
+    position: absolute;
+    left: -16px;
+    top: 2px;
+    width: 6px;
+    height: 24px;
+    background: #111;
+    border-radius: 3px;
+}
+
+.review-card {
+    background: #fff;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.review-card .row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    /* ラベル / 内容 */
+    align-items: center;
+    min-height: 86px;
+    border-bottom: 1px solid #EFEFEF;
+}
+
+.review-card .row:last-child {
+    border-bottom: none;
+}
+
+.review-card .th {
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    padding: 0 28px;
+    letter-spacing: .03em;
+}
+
+.review-card .td {
+    padding: 0 32px;
+}
+
+.td-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.td-date .date-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.td-date .y,
+.td-date .md {
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+.td-pair {
+    display: grid;
+    grid-template-columns: 120px 40px 120px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.time-box {
+    display: inline-block;
+    min-width: 110px;
+    padding: 9px 14px;
+    border: 1px solid #E2E2E2;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: .03em;
+    background: #fff;
+}
+
+.wave {
+    color: #888;
+    font-weight: 600;
+    text-align: center;
+}
+
+.row-note .td {
+    padding: 18px 32px 26px;
+}
+
+.note-box {
+    min-height: 56px;
+    padding: 16px 18px;
+    border: 1px solid #E2E2E2;
+    border-radius: 8px;
+    background: #fff;
+    line-height: 1.8;
+    letter-spacing: .02em;
+    color: #222;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 22px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 114px;
+    height: 48px;
+    border-radius: 8px;
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: .08em;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    opacity: .92;
+}
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 132px;
+    height: 48px;
+    border-radius: 8px;
+    background: #F0F0F0;
+    color: #555;
+    font-weight: 700;
+    letter-spacing: .08em;
+    border: none;
+}
+
+/* ヘッダーネビ：active */
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+}
+
+.nav a.active {
+    opacity: 1;
+}
+
+.nav a:hover {
+    opacity: 1;
+}
+
+.logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: .9;
+}
+
+.logout-form button:hover {
+    opacity: 1;
+}
+
+/* ====== 1024px 以下（タブレット横〜） ====== */
+@media (max-width: 1024px) {
+    .review-container {
+        max-width: 860px;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
+
+    .review-card .row {
+        min-height: 78px;
+    }
+
+    .td-pair {
+        grid-template-columns: 112px 36px 112px;
+        max-width: 380px;
+    }
+
+    .time-box {
+        min-width: 104px;
+        padding: 8px 12px;
+    }
+}
+
+/* ====== 768px 以下（タブレット縦・小さめラップ） ====== */
+@media (max-width: 768px) {
+    .review-container {
+        padding: 0 12px;
+    }
+
+    .page-title {
+        font-size: 21px;
+    }
+
+    .page-title::before {
+        left: -12px;
+        height: 22px;
+    }
+
+    /* 行を縦積みに（ラベル→内容） */
+    .review-card .row {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 10px 0;
+    }
+
+    .review-card .th {
+        padding: 12px 18px 6px;
+        font-size: 14px;
+        color: #444;
+    }
+
+    .review-card .td {
+        padding: 0 18px 14px;
+    }
+
+    /* 日付：2列のまま少し詰める */
+    .td-date .date-split {
+        gap: 14px;
+    }
+
+    /* 時刻のペア：小さめ */
+    .td-pair {
+        grid-template-columns: 100px 28px 100px;
+        gap: 8px;
+        max-width: 320px;
+    }
+
+    .time-box {
+        min-width: 96px;
+        padding: 8px 10px;
+        font-size: 15px;
+    }
+
+    /* ボタンはやや大きめ */
+    .btn,
+    .btn-ghost {
+        height: 50px;
+    }
+}
+
+/* ====== 560px 以下（スマホ） ====== */
+@media (max-width: 560px) {
+    .review-container {
+        margin: 20px auto 40px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        margin: 18px 0 16px;
+    }
+
+    .page-title::before {
+        left: -10px;
+        width: 5px;
+        height: 20px;
+    }
+
+    /* 日付は1列縦並びにして読みやすく */
+    .td-date .date-split {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    /* 時刻のペア：さらに小さく */
+    .td-pair {
+        grid-template-columns: 92px 24px 92px;
+        gap: 6px;
+        max-width: 260px;
+    }
+
+    .time-box {
+        min-width: 88px;
+        padding: 7px 8px;
+        font-size: 14.5px;
+    }
+
+    .wave {
+        font-size: 14px;
+    }
+
+    /* 備考のパディングを詰める */
+    .row-note .td {
+        padding: 12px 18px 16px;
+    }
+
+    .note-box {
+        min-height: 52px;
+        padding: 12px 14px;
+    }
+
+    /* ボタンは横幅いっぱい */
+    .actions {
+        margin-top: 18px;
+    }
+
+    .btn,
+    .btn-ghost {
+        width: 100%;
+        height: 54px;
+        border-radius: 10px;
+    }
+}
