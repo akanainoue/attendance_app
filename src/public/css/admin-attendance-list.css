@@ -1,0 +1,177 @@
+/* ヘッダー(common.css / layouts.app.css 前提)の下に余白 */
+.main {
+    padding: 32px 0 64px;
+}
+
+.container {
+    width: 980px;
+    margin: 0 auto;
+}
+
+/* タイトル */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 8px 0 20px;
+}
+
+.page-title .bar {
+    display: inline-block;
+    width: 6px;
+    height: 28px;
+    background: #111;
+    border-radius: 3px;
+}
+
+/* カード共通 */
+.card {
+    background: #fff;
+    border: 1px solid #e6e6ea;
+    border-radius: 8px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+}
+
+/* 日付ナビ */
+.day-nav {
+    margin-top: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #333;
+}
+
+.day-nav a:hover {
+    opacity: .8;
+}
+
+.day-nav .arrow {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.day-nav .current {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.day-nav .cal {
+    width: 20px;
+    height: 20px;
+    fill: #333;
+}
+
+.day-nav .date {
+    letter-spacing: .2px;
+}
+
+/* 一覧テーブル */
+.sheet {
+    margin-top: 18px;
+}
+
+.att-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.att-table thead th {
+    font-size: 14px;
+    font-weight: 700;
+    color: #555;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+    text-align: left;
+}
+
+.att-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f3;
+    font-size: 14px;
+    color: #222;
+}
+
+.att-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.col-name {
+    width: 32%;
+}
+
+.col-detail {
+    width: 10%;
+    text-align: left;
+}
+
+/* 詳細リンク（スクショのトーンに合わせた控えめボタン風） */
+.link-detail {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #d8d8de;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #222;
+    font-size: 13px;
+    background: #fff;
+}
+
+.link-detail:hover {
+    background: #f7f7f9;
+}
+
+/* ヘッダーナビ（layouts.appの @yield('nav') を想定） */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+}
+
+.nav a.active {
+    opacity: 1;
+}
+
+.nav a:hover {
+    opacity: 1;
+}
+
+.logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: .9;
+}
+
+.logout-form button:hover {
+    opacity: 1;
+}
+
+/* レスポンシブ（幅が狭い場合の軽い調整） */
+@media (max-width: 1024px) {
+    .container {
+        width: 92%;
+    }
+}

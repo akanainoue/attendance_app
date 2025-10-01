@@ -1,0 +1,155 @@
+/* ページレイアウト */
+.main .container {
+    max-width: 980px;
+    margin: 48px auto 80px;
+    padding: 0 16px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-title .bar {
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: #111;
+    border-radius: 2px;
+}
+
+/* カード */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    border: 1px solid #eee;
+}
+
+/* 詳細グリッド */
+.detail-grid .row {
+    display: grid;
+    grid-template-columns: 160px 1fr 40px 1fr;
+    /* ラベル / 左 / 〜 / 右 */
+    align-items: center;
+    min-height: 72px;
+    border-top: 1px solid #eee;
+}
+
+.detail-grid .row:first-child {
+    border-top: none;
+}
+
+.detail-grid .th {
+    font-weight: 700;
+    color: #333;
+    padding: 22px 20px;
+    line-height: 1;
+}
+
+.detail-grid .td {
+    padding: 22px 16px;
+}
+
+.detail-grid .td-span {
+    grid-column: 2 / 5;
+    /* コンテンツ2列ぶんを跨ぐ */
+}
+
+.detail-grid .tilde {
+    text-align: center;
+    color: #666;
+    font-weight: 700;
+}
+
+/* 入力系 */
+.time-input {
+    width: 120px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #dcdfe3;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+}
+
+.time-input:focus {
+    outline: none;
+    border-color: #999;
+}
+
+.note-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dcdfe3;
+    border-radius: 10px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.note-input:focus {
+    outline: none;
+    border-color: #999;
+}
+
+/* ボタン */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.btn-primary {
+    appearance: none;
+    border: none;
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 12px 34px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity .15s;
+}
+
+.btn-primary:hover {
+    opacity: .9;
+}
+
+/* ヘッダーナビ（layouts.app の上に軽く整えるだけ） */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .9;
+}
+
+.nav a.active {
+    opacity: 1;
+}
+
+.nav a:hover {
+    opacity: 1;
+}
+
+.logout-form button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: .9;
+}
+
+.logout-form button:hover {
+    opacity: 1;
+}
