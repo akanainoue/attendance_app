@@ -48,9 +48,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Attendance::class);
     }
     // 自分が出した修正申請
-    public function correctionRequests()
+    public function requests()
     {
-        return $this->hasMany(CorrectionRequest::class,'requested_by');
+        return $this->hasMany(AttendanceRequest::class,'requested_by');
     }
     // 自分が書いた備考
     public function attendanceNotesAuthored()

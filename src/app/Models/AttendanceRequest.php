@@ -24,7 +24,7 @@ class AttendanceRequest extends Model
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_APPROVED = 'approved';
-    public const STATUS_REJECTED = 'rejected';
+    // public const STATUS_REJECTED = 'rejected';
 
     protected $casts=[
         'payload'=>'array','reviewed_at'=>'datetime'
