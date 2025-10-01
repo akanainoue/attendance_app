@@ -23,16 +23,16 @@
     php artisan migrate
 7. シーディングの実行
     php artisan db:seed
-8. シンボリックリンク作成
-    php artisan storage:link
+<!-- 8. シンボリックリンク作成
+    php artisan storage:link -->
     
 ### 使用技術
-+ PHP8.3.0
-+ Laravel8.83.27
++ PHP8.1.33
++ Laravel8.83.29
 + MySQL8.0.26
 
 ## ER図
-![alt text](image-1.png)
+![alt text](image.png)
 
 ## URL
 + 開発環境：http://localhost/
