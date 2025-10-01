@@ -11,7 +11,7 @@ class AuthenticatedSessionController extends Controller
 {
     public function create()
     {
-        return view('admin.auth.login');
+        return view( 'admin.auth.login');
     }
 
     public function store(LoginRequest $request)
@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/admin/attendances');
+            return redirect()->intended('/admin/attendance/list');
         }
 
         return back()

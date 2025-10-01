@@ -16,8 +16,9 @@ class UseFortifyGuard
      */
     public function handle(Request $request, Closure $next, $guard = 'web')
     {
+        // Fortify が参照する guard を切り替え
         config(['fortify.guard' => $guard]);
-        config(['fortify.passwords' => $guard === 'admin' ? 'admins' : 'users']);
+        config(['auth.defaults.guard' => $guard]);
         return $next($request);
     }
 }

@@ -15,7 +15,7 @@
 @section('content')
 <div class="login-form">
     <h2 class="form-title">ログイン</h2>
-    <form class="form-content" action="admin/login" method="post">
+    <form class="form-content" action="/admin/login" method="post">
         @csrf
         <div class="form__group">
             <label class="form__label" for="email">メールアドレス</label>
