@@ -24,105 +24,68 @@ class AttendanceRequest extends FormRequest
      *
      * @return array
      */
+    //
+    
     public function rules()
     {
         return [
-            'clock_in_at'   => ['required', 'date'],
-            'clock_out_at'  => ['required', 'date'],
+            'clock_in_at'   => ['required', 'date_format:H:i'],
+            'clock_out_at'  => ['required', 'date_format:H:i'],
             'breaks'        => ['nullable', 'array'],
-            'breaks.*.start_at' => ['nullable', 'date'],
-            'breaks.*.end_at'   => ['nullable', 'date'],
-            'reason'          => ['required', 'string'],
+            'breaks.*.start_at' => ['nullable', 'date_format:H:i'],
+            'breaks.*.end_at'   => ['nullable', 'date_format:H:i'],
+            'reason'        => ['required', 'string'], // ←必要に応じて nullable に
         ];
     }
 
     public function messages(): array
     {
+        // 個別フィールド用の前後関係メッセージは出さない
         return [
-            // ① 出勤/退勤の前後関係
-            'clock_in_at.before'  => '出勤時間もしくは退勤時間が不適切な値です',
-            'clock_out_at.after'  => '出勤時間もしくは退勤時間が不適切な値です',
-
-            // ② 休憩開始の範囲外
-            'breaks.*.start_at.after_or_equal' => '休憩時間が不適切な値です',
-            'breaks.*.start_at.before_or_equal'=> '休憩時間が不適切な値です',
-
-            // ③ 休憩終了の範囲外/開始より前
-            'breaks.*.end_at.after'            => '休憩時間もしくは退勤時間が不適切な値です',
-            'breaks.*.end_at.before_or_equal'  => '休憩時間もしくは退勤時間が不適切な値です',
-
-            // ④ 備考
+            'clock_in_at.date_format'  => '出勤時刻の形式が不正です（例: 09:00）',
+            'clock_out_at.date_format' => '退勤時刻の形式が不正です（例: 18:00）',
+            'breaks.*.start_at.date_format' => '休憩時間の形式が不正です（例: 12:30）',
+            'breaks.*.end_at.date_format'   => '休憩時間の形式が不正です（例: 13:00）',
             'reason.required' => '備考を記入してください',
-
-            // 型エラー時の補助
-            'clock_in_at.date'                  => '出勤時間もしくは退勤時間が不適切な値です',
-            'clock_out_at.date'                 => '出勤時間もしくは退勤時間が不適切な値です',
-            'breaks.*.start_at.date'            => '休憩時間が不適切な値です',
-            'breaks.*.end_at.date'              => '休憩時間もしくは退勤時間が不適切な値です',
         ];
     }
 
-    public function attributes(): array
+    public function withValidator(\Illuminate\Validation\Validator $v): void
     {
-        return [
-            'clock_in_at'  => '出勤時間',
-            'clock_out_at' => '退勤時間',
-            'breaks.*.start_at' => '休憩開始時間',
-            'breaks.*.end_at'   => '休憩終了時間',
-            'reason'         => '備考',
-        ];
-    }
-
-    /**
-     * 相関チェック（配列のワイルドルールが効かない場合も確実に拾う）
-     */
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function (Validator $v) {
-            // 値を Carbon へ（空なら null）
+        $v->after(function (\Illuminate\Validation\Validator $v) {
             $cin  = $this->toCarbon($this->input('clock_in_at'));
             $cout = $this->toCarbon($this->input('clock_out_at'));
 
-            // ① 出勤 > 退勤（または退勤 < 出勤）
+            // 出退勤の前後関係（等号を許可したいなら gt → gte にしない。許可するなら "gt" チェックを "lt" の否定に変更）
             if ($cin && $cout && $cin->gt($cout)) {
-                $v->errors()->add('clock_out_at', '出勤時間もしくは退勤時間が不適切な値です');
+                $v->errors()->add('work_time', '出勤時間もしくは退勤時間が不適切な値です');
             }
 
-            // 休憩の検証
-            $breaks = $this->input('breaks', []);
-            foreach ((array)$breaks as $i => $br) {
+            // 休憩：どれか1つでもおかしければ break_time に1件だけ追加
+            $breakErr = false;
+            $breaks = (array) $this->input('breaks', []);
+            foreach ($breaks as $br) {
                 $s = $this->toCarbon($br['start_at'] ?? null);
                 $e = $this->toCarbon($br['end_at']   ?? null);
 
-                // ② 休憩開始が [出勤..退勤] の範囲外
                 if ($s) {
-                    if ($cin && $s->lt($cin)) {
-                        $v->errors()->add("breaks.$i.start_at", '休憩時間が不適切な値です');
-                    }
-                    if ($cout && $s->gt($cout)) {
-                        $v->errors()->add("breaks.$i.start_at", '休憩時間が不適切な値です');
-                    }
+                    if ($cin && $s->lt($cin))  $breakErr = true;        // 出勤より前
+                    if ($cout && $s->gt($cout)) $breakErr = true;       // 退勤より後
                 }
-
-                // ③ 休憩終了が開始より前／退勤より後
                 if ($e) {
-                    if ($s && $e->lt($s)) {
-                        $v->errors()->add("breaks.$i.end_at", '休憩時間もしくは退勤時間が不適切な値です');
-                    }
-                    if ($cout && $e->gt($cout)) {
-                        $v->errors()->add("breaks.$i.end_at", '休憩時間もしくは退勤時間が不適切な値です');
-                    }
+                    if ($s && $e->lt($s))      $breakErr = true;        // 開始より前で終了
+                    if ($cout && $e->gt($cout)) $breakErr = true;       // 退勤より後に終了
                 }
+            }
+            if ($breakErr) {
+                $v->errors()->add('break_time', '休憩時間が不適切な値です');
             }
         });
     }
 
-    private function toCarbon($value): ?Carbon
+    private function toCarbon($v): ?\Illuminate\Support\Carbon
     {
-        try {
-            return $value ? Carbon::parse($value) : null;
-        } catch (\Throwable $e) {
-            return null;
-        }
+        try { return $v ? \Illuminate\Support\Carbon::parse($v) : null; }
+        catch (\Throwable $e) { return null; }
     }
 }

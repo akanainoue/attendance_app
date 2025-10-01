@@ -34,21 +34,6 @@
 </nav>
 @endsection
 
-<!-- @php
-  // $status は 'working' | 'breaking' | 'done' | 'off' を想定
-  $status = $status ?? 'off';
-  $chipText = [
-    'off'      => '勤務外',
-    'working'  => '出勤中',
-    'breaking' => '休憩中',
-    'done'     => '退勤済'
-  ][$status] ?? '勤務外';
-
-  // サーバーで描画（JSなし）
-  $date = $date ?? now()->format('Y年n月j日(D)');
-  $time = $time ?? now()->format('H:i');
-@endphp -->
-
 @section('content')
 <main class="main">
   <div class="container center-stack">

@@ -27,18 +27,35 @@ class StaffAttendanceController extends Controller
 
         $rows = [];
         for ($d = $month->copy(); $d->lte($end); $d->addDay()) {
-            $a = $attendances->get($d->format('Y-m-d'));
+            $a = $attendances->get($d->toDateString());
+
+            $in  = $this->min0($a?->clock_in_at);
+            $out = $this->min0($a?->clock_out_at);
+
+            // 休憩は start/end とも「分切り捨て」で差分
+            $breakSec = $a
+                ? $a->breaks->reduce(function ($s, $b) {
+                    if ($b->start_at && $b->end_at) {
+                        $st = $this->min0($b->start_at);
+                        $en = $this->min0($b->end_at);
+                        return $s + max(0, $en->diffInSeconds($st));
+                    }
+                    return $s;
+                }, 0)
+                : 0;
+
+            $totalSec = ($in && $out)
+                ? max(0, $out->diffInSeconds($in) - $breakSec)
+                : null;
+
             $rows[] = [
                 'id'    => $a->id ?? null,
-                'ymd'   => $d->toDateString(),                 // ← 追加
+                'ymd'   => $d->toDateString(),
                 'date'  => $d->locale('ja')->isoFormat('MM/DD(dd)'),
-                'in'    => optional($a?->clock_in_at)->format('H:i'),
-                'out'   => optional($a?->clock_out_at)->format('H:i'),
-                'break' => $a ? gmdate('G:i', $a->breaks->sum(fn($b)=>max(0, optional($b->end_at)->diffInSeconds($b->start_at)))) : '0:00',
-                'total' => $a && $a->clock_in_at && $a->clock_out_at
-                            ? gmdate('G:i', $a->clock_out_at->diffInSeconds($a->clock_in_at)
-                                        - $a->breaks->sum(fn($b)=>max(0, optional($b->end_at)->diffInSeconds($b->start_at))))
-                            : '-',
+                'in'    => $in  ? $in->format('H:i')  : '-',
+                'out'   => $out ? $out->format('H:i') : '-',
+                'break' => gmdate('G:i', $breakSec),                 // 0:01 など
+                'total' => is_int($totalSec) ? gmdate('G:i', $totalSec) : '-',
             ];
         }
 
@@ -47,7 +64,7 @@ class StaffAttendanceController extends Controller
 
     public function detail($id)
     {
-        $attendance = Attendance::with(['user', 'breaks' => fn($q) => $q->orderBy('start_at')])
+        $attendance = Attendance::with(['user', 'breaks', 'requests'])
             ->where('user_id', auth()->id())
             ->findOrFail($id);
 
@@ -103,17 +120,6 @@ class StaffAttendanceController extends Controller
         return redirect('/requests')->with('status', '修正申請を送信しました');
     }
 
-    // public function requestIndex(Request $request)
-    // {
-    //     $tab = $request->query('tab', 'pending');
-
-    //     $requests = \App\Models\AttendanceRequest::with('attendance')
-    //         ->where('requested_by', auth()->id())
-    //         ->when($tab, fn ($q) => $q->where('status', $tab))
-    //         ->latest()->paginate(20);
-
-    //     return view('user.requests.index', compact('requests', 'tab'));
-    // }
 
     /** 申請一覧 */
     public function requestIndex(Request $request)
@@ -138,7 +144,7 @@ class StaffAttendanceController extends Controller
         $statusMap = [
             AttendanceRequest::STATUS_PENDING  => '承認待ち',
             AttendanceRequest::STATUS_APPROVED => '承認済み',
-            AttendanceRequest::STATUS_REJECTED => '却下',
+            // AttendanceRequest::STATUS_REJECTED => '却下',
         ];
 
         $rows = $reqs->map(function ($r) use ($statusMap) {
@@ -154,4 +160,10 @@ class StaffAttendanceController extends Controller
 
         return view('user.requests.index', compact('rows', 'tab'));
     }
+
+    private function min0(?\Carbon\Carbon $dt): ?\Carbon\Carbon
+    {
+        return $dt?->copy()->seconds(0);   // 秒を 0 に
+    }
+
 }

@@ -33,6 +33,7 @@ class PunchController extends Controller
 
     public function clockIn()
     {
+        $now = now()->seconds(0);  // ★ 秒を落とす
         $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         abort_if($att->clock_in_at, 422, 'すでに出勤済みです');
         $att->update(['clock_in_at'=>now()]);
@@ -42,6 +43,7 @@ class PunchController extends Controller
 
     public function breakStart()
     {
+        $now = now()->seconds(0);  // ★ 秒を落とす
         $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         abort_if(!$att->clock_in_at || $att->clock_out_at, 422);
         abort_if($att->breaks()->whereNull('end_at')->exists(), 422);
@@ -51,6 +53,7 @@ class PunchController extends Controller
 
     public function breakEnd()
     {
+        $now = now()->seconds(0);  // ★ 秒を落とす
         $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         $break = $att->breaks()->whereNull('end_at')->latest('start_at')->first();
         abort_if(!$break, 422);
@@ -60,6 +63,7 @@ class PunchController extends Controller
 
     public function clockOut()
     {
+        $now = now()->seconds(0);  // ★ 秒を落とす
         $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         abort_if(!$att->clock_in_at || $att->clock_out_at, 422, '退勤済みです。');
         // 休憩が開いていれば自動で閉じる

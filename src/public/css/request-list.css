@@ -38,6 +38,7 @@ body {
     border: none;
     color: #fff;
     cursor: pointer;
+    font: inherit;
     opacity: .9;
 }
 
@@ -169,11 +170,8 @@ body {
 .badge {
     display: inline-block;
     padding: 4px 10px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: #f7f7f9;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: normal;
     color: #333;
 }
 
@@ -191,12 +189,10 @@ body {
     min-width: 56px;
     text-align: center;
     padding: 6px 10px;
-    border-radius: 8px;
     text-decoration: none;
-    background: #f7f7f9;
-    border: 1px solid var(--line);
     color: #111;
-    font-size: 13px;
+    font-size: 15px;
+    font-weight: bolder;
 }
 
 .link-detail:hover {
