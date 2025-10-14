@@ -13,3 +13,4 @@ class LogoutResponse implements LogoutResponseContract
         return redirect($to);
     }
 }
+
