@@ -34,8 +34,6 @@ Route::middleware(['auth','verified'])->group(function () {
     // 勤怠一覧・詳細・備考・申請
     Route::get('/attendance/list',               [StaffAttendanceController::class, 'index']);        // 勤怠一覧
     Route::get('/attendance/detail/{id}',        [StaffAttendanceController::class, 'detail']);         // 勤怠詳細
-    // Route::get('/attendance/detail/date/{date}',
-    // [StaffAttendanceController::class, 'detailByDate'])->where('date', '\d{4}-\d{2}-\d{2}');
     Route::post('/attendance/detail/{id}/notes', [StaffRequestController::class, 'upsert']);      //備考
     Route::get('/stamp_correction_request/list', [StaffAttendanceController::class, 'requestIndex']); // 申請一覧
 });
@@ -49,21 +47,20 @@ Route::prefix('admin')->group(function () {
     Route::post('login', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'store'])
         ->middleware('fortify.guard:admin');
 
-    
     // ログアウト処理：Fortify に渡す（admin ガードで）
     Route::post('logout', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'destroy'])
         ->middleware('fortify.guard:admin');
 
     // 管理者の保護エリア（例）
     Route::middleware('auth:admin')->group(function () {
-        Route::get('attendance/list',              [AdminAttendanceController::class, 'index']);
-        Route::get('attendance/{id}',         [AdminAttendanceController::class, 'detail']);
-        Route::patch('/attendance/{id}', [AdminAttendanceController::class, 'update']);
-        Route::get('staff/list',                    [AdminAttendanceController::class, 'staffIndex']);
-        Route::get('attendance/staff/{id}', [AdminAttendanceController::class, 'indexByStaff']);
-
-        Route::get('stamp_correction_request/list',                 [AdminRequestController::class, 'requestIndex']);
-        Route::get('stamp_correction_request/approve/{attendance_correct_request}',            [AdminRequestController::class, 'showRequest']);
-        Route::patch('requests/{id}/accept',   [AdminRequestController::class, 'accept']);
+        Route::get('attendance/list',                      [AdminAttendanceController::class, 'index']);
+        Route::get('attendance/{id}',                      [AdminAttendanceController::class, 'detail']);
+        Route::patch('/attendance/{id}',                   [AdminAttendanceController::class, 'update']);
+        Route::get('staff/list',                        [AdminAttendanceController::class, 'staffIndex']);
+        Route::get('attendance/staff/{id}',            [AdminAttendanceController::class, 'indexByStaff']);
+        Route::get('stamp_correction_request/list',       [AdminRequestController::class, 'requestIndex']);
+        Route::get('stamp_correction_request/approve/{attendance_correct_request}', [AdminRequestController::class, 'showRequest']);
+        Route::patch('requests/{id}/accept',                    [AdminRequestController::class, 'accept']);
     });
 });
+
