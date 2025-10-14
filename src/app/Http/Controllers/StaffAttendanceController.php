@@ -27,7 +27,19 @@ class StaffAttendanceController extends Controller
 
         $rows = [];
         for ($d = $month->copy(); $d->lte($end); $d->addDay()) {
-            $a = $attendances->get($d->toDateString());
+            $key = $d->toDateString();
+            $a   = $attendances->get($key);
+
+            // ★ その日のレコードが無ければ作って ID を確保
+            if (!$a) {
+                $a = Attendance::firstOrCreate([
+                    'user_id'   => auth()->id(),
+                    'work_date' => $key,
+                ]);
+                // ★ 後続の参照用にコレクションへも反映
+                $a->setRelation('breaks', collect()); // 新規は空コレクションに
+                $attendances->put($key, $a);
+            }
 
             $in  = $this->min0($a?->clock_in_at);
             $out = $this->min0($a?->clock_out_at);

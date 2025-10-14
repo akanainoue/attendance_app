@@ -66,13 +66,12 @@
                     <td>{{ $row['break'] ?? '0:00' }}</td>
                     <td>{{ $row['total'] ?? '-' }}</td>
                     <td>
-                        @php
+                        <!-- @php
                         $link = $row['id']
                                 ? url('/attendance/detail/'.$row['id'])
                                 : url('/attendance/detail/date/'.$row['ymd']);
-                        @endphp
-                        <a class="link-detail" href="{{ $link }}">詳細</a>
-                        <!-- <a class="link-detail" href="{{ url('/attendance/detail/'.$row['id']) }}">詳細</a> -->
+                        @endphp -->
+                        <a class="link-detail" href="{{ url('/attendance/detail/'.$row['id']) }}">詳細</a>
                     </td>
                 </tr>
             @endforeach
