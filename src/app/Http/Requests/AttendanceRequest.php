@@ -34,7 +34,7 @@ class AttendanceRequest extends FormRequest
             'breaks'        => ['nullable', 'array'],
             'breaks.*.start_at' => ['nullable', 'date_format:H:i'],
             'breaks.*.end_at'   => ['nullable', 'date_format:H:i'],
-            'reason'        => ['required', 'string'], // ←必要に応じて nullable に
+            'reason'        => ['required', 'string'], 
         ];
     }
 
