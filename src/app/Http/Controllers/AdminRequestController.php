@@ -12,21 +12,7 @@ use Carbon\Carbon;
 
 class AdminRequestController extends Controller
 {
-    /**
-     * 申請一覧（承認待ち/承認済みタブ）
-     * GET /admin/stamp_correction_request/list?tab=pending|approved|rejected
-     */
-    // public function index(Request $request)
-    // {
-    //     $tab = $request->query('tab', AttendanceRequest::STATUS_PENDING);
-
-    //     $requests = AttendanceRequest::with(['attendance.user'])
-    //         ->when($tab, fn ($q) => $q->where('status', $tab))
-    //         ->latest()->paginate(50);
-
-    //     return view('admin.requests.index', compact('requests', 'tab'));
-    // }
-
+    
     /**
      * 申請一覧（承認待ち / 承認済みタブ）
      * GET /admin/stamp_correction_request/list?status=pending|approved

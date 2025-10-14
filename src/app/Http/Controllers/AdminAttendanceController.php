@@ -151,11 +151,6 @@ class AdminAttendanceController extends Controller
             ->keyBy(fn ($a) => $a->work_date->toDateString());
 
 
-        // 実働（秒）
-        // $totalSec = ($a?->clock_in_at && $a?->clock_out_at)
-        //   ? max(0, $a->clock_out_at->diffInSeconds($a->clock_in_at) - $breakSec)
-        //   : null;
-
 
         $rows = [];
         for ($d = $month->copy(); $d->lte($end); $d->addDay()) {

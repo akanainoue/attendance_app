@@ -14,28 +14,28 @@ class AuthenticatedSessionController extends Controller
         return view( 'admin.auth.login');
     }
 
-    public function store(LoginRequest $request)
-    {
-        // ここで自動的にバリデーションが実行される
-        $credentials = $request->validated();        // ['email'=>..., 'password'=>...]
-        $remember    = $request->boolean('remember');
+    // public function store(LoginRequest $request)
+    // {
+    //     // ここで自動的にバリデーションが実行される
+    //     $credentials = $request->validated();        // ['email'=>..., 'password'=>...]
+    //     $remember    = $request->boolean('remember');
 
-        if (Auth::guard('admin')->attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-            return redirect()->intended('/admin/attendance/list');
-        }
+    //     if (Auth::guard('admin')->attempt($credentials, $remember)) {
+    //         $request->session()->regenerate();
+    //         return redirect()->intended('/admin/attendance/list');
+    //     }
 
-        return back()
-            ->withErrors(['email' => '認証に失敗しました'])
-            ->onlyInput('email');
-    }
+    //     return back()
+    //         ->withErrors(['email' => '認証に失敗しました'])
+    //         ->onlyInput('email');
+    // }
 
-    public function destroy()
-    {
-        Auth::guard('admin')->logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-        return redirect('/admin/login');
-    }
+    // public function destroy()
+    // {
+    //     Auth::guard('admin')->logout();
+    //     request()->session()->invalidate();
+    //     request()->session()->regenerateToken();
+    //     return redirect('/admin/login');
+    // }
 
 }
