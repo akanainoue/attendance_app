@@ -80,37 +80,7 @@ class Attendance extends Model
         return is_null($this->work_seconds) ? null : gmdate('G:i', $this->work_seconds);
     }
     
-    // 休憩合計（秒）
-    // public function breakSeconds(): int
-    // {
-    //     return (int) $this->breaks
-    //         ->sum(fn($b) => $b->end_at ? $b->end_at->diffInSeconds($b->start_at) : 0);
-    // }
-
-    // 実働合計（秒）: (退勤−出勤) − 休憩
-    // public function workSeconds(): ?int
-    // {
-    //     if (!$this->clock_in_at || !$this->clock_out_at) return null;
-    //     $sec = $this->clock_out_at->diffInSeconds($this->clock_in_at) - $this->breakSeconds();
-    //     return max(0, $sec);
-    // }
-
-    /** 休憩合計(分) */
-    // public function getBreakTotalMinutesAttribute(): int
-    // {
-    //     $breaks = $this->relationLoaded('breaks') ? $this->breaks : $this->breaks()->get();
-    //     return (int) $breaks->sum(function ($b) {
-    //         if (!$b->start_at || !$b->end_at) return 0;
-    //         return $b->end_at->diffInMinutes($b->start_at);
-    //     });
-    // }
-
-    /** 実労働合計(分) = (退勤-出勤) - 休憩 */
-    // public function getWorkTotalMinutesAttribute(): ?int
-    // {
-    //     if (!$this->clock_in_at || !$this->clock_out_at) return null;
-    //     return max(0, $this->clock_out_at->diffInMinutes($this->clock_in_at) - $this->break_total_minutes);
-    // }
+    
 
     /** 日付指定 */
     public function scopeForDate($q, $date)
