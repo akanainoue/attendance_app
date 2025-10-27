@@ -21,5 +21,9 @@ class Admin extends Authenticatable
     protected $hidden = ['password','remember_token'];
     
     // 自分が審査した申請
-    public function reviewedRequests() { return $this->hasMany(CorrectionRequest::class,'reviewed_by'); }
+    public function reviewedRequests() { 
+        return $this->hasMany(CorrectionRequest::class,'reviewed_by'); 
+    }
 }
+
+

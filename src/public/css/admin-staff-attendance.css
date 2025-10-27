@@ -114,12 +114,25 @@
     background: #e6e6e6;
 }
 
+.badge-pending {
+    display: inline-block;
+    margin-left: .4rem;
+    padding: .1rem .4rem;
+    font-size: .75rem;
+    border-radius: .25rem;
+    background: #ffe8e6;
+    color: #b71c1c;
+    font-weight: 600;
+}
+
 .link-detail.is-disabled {
     pointer-events: none;
     color: #A0A0A0;
     opacity: .6;
     background: #f2f2f2;
 }
+
+
 
 /* --- 右下：CSV出力 --- */
 .export-area {

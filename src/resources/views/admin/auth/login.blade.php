@@ -1,11 +1,3 @@
-<!-- <form method="POST" action="{{ url('/admin/login') }}">
-  @csrf
-  <input type="email" name="email" required autofocus placeholder="Email">
-  <input type="password" name="password" required placeholder="Password">
-  <label><input type="checkbox" name="remember"> Remember</label>
-  <button type="submit">管理者ログイン</button>
-</form> -->
-
 @extends('layouts.app')
 
 @section('css')

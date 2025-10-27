@@ -19,7 +19,7 @@ class StaffAttendanceController extends Controller
         $end   = $month->copy()->endOfMonth();
 
         // 1日〜月末まで行を作り、該当日の勤怠があれば埋める想定
-        $attendances = Attendance::with('breaks')
+        $attendances = Attendance::with(['breaks', 'request'])
             ->where('user_id', auth()->id())
             ->whereBetween('work_date', [$month, $end])
             ->get()
@@ -27,47 +27,54 @@ class StaffAttendanceController extends Controller
 
         $rows = [];
         for ($d = $month->copy(); $d->lte($end); $d->addDay()) {
-            $key = $d->toDateString();
-            $a   = $attendances->get($key);
+            /** @var \App\Models\Attendance|null $a */
+            $a = $attendances->get($d->toDateString());
 
-            // ★ その日のレコードが無ければ作って ID を確保
-            if (!$a) {
-                $a = Attendance::firstOrCreate([
-                    'user_id'   => auth()->id(),
-                    'work_date' => $key,
-                ]);
-                // ★ 後続の参照用にコレクションへも反映
-                $a->setRelation('breaks', collect()); // 新規は空コレクションに
-                $attendances->put($key, $a);
-            }
+            // ① pending の申請payloadがあれば、それを一覧の表示値として“適用”
+            $payload = ($a && $a->request && $a->request->status === \App\Models\AttendanceRequest::STATUS_PENDING)
+                ? ($a->request->payload ?? [])
+                : [];
 
-            $in  = $this->min0($a?->clock_in_at);
-            $out = $this->min0($a?->clock_out_at);
+            // ② 出退勤の「見かけの値」を作る（H:i）
+            $inStr  = $payload['clock_in_at']  ?? optional($a?->clock_in_at)->format('H:i');
+            $outStr = $payload['clock_out_at'] ?? optional($a?->clock_out_at)->format('H:i');
 
-            // 休憩は start/end とも「分切り捨て」で差分
-            $breakSec = $a
-                ? $a->breaks->reduce(function ($s, $b) {
-                    if ($b->start_at && $b->end_at) {
-                        $st = $this->min0($b->start_at);
-                        $en = $this->min0($b->end_at);
-                        return $s + max(0, $en->diffInSeconds($st));
-                    }
-                    return $s;
-                }, 0)
-                : 0;
+            // ③ 休憩の「見かけの値」リスト（payload優先、なければDB）
+            $brPayload = collect($payload['breaks'] ?? []);
+            $brDb = collect($a?->breaks ?? [])->map(fn($b)=>[
+                'start_at' => optional($b->start_at)->format('H:i'),
+                'end_at'   => optional($b->end_at)->format('H:i'),
+            ]);
+            $brList = $brPayload->isNotEmpty() ? $brPayload : $brDb;
 
-            $totalSec = ($in && $out)
-                ? max(0, $out->diffInSeconds($in) - $breakSec)
-                : null;
+            // ④ 合計を計算（分は切り捨て・秒は持たない想定）
+            $in  = $inStr  ? \Carbon\Carbon::parse($d->toDateString().' '.$inStr)  : null;
+            $out = $outStr ? \Carbon\Carbon::parse($d->toDateString().' '.$outStr) : null;
+
+            // 休憩秒
+            $breakSec = $brList->reduce(function ($s, $b) use ($d) {
+                $sStr = $b['start_at'] ?? null;
+                $eStr = $b['end_at']   ?? null;
+                if ($sStr && $eStr) {
+                    $st = \Carbon\Carbon::parse($d->toDateString().' '.$sStr)->seconds(0);
+                    $en = \Carbon\Carbon::parse($d->toDateString().' '.$eStr)->seconds(0);
+                    return $s + max(0, $en->diffInSeconds($st));
+                }
+                return $s;
+            }, 0);
+
+            $totalSec = ($in && $out) ? max(0, $out->seconds(0)->diffInSeconds($in->seconds(0)) - $breakSec) : null;
 
             $rows[] = [
                 'id'    => $a->id ?? null,
                 'ymd'   => $d->toDateString(),
                 'date'  => $d->locale('ja')->isoFormat('MM/DD(dd)'),
-                'in'    => $in  ? $in->format('H:i')  : '-',
-                'out'   => $out ? $out->format('H:i') : '-',
-                'break' => gmdate('G:i', $breakSec),                 // 0:01 など
+                'in'    => $inStr  ?: '-',
+                'out'   => $outStr ?: '-',
+                'break' => gmdate('G:i', $breakSec),                             // 0:00 形式
                 'total' => is_int($totalSec) ? gmdate('G:i', $totalSec) : '-',
+                // お好みで “申請中” バッジに使えるフラグも渡せる
+                'is_pending' => ($a && $a->request && $a->request->status === \App\Models\AttendanceRequest::STATUS_PENDING),
             ];
         }
 
@@ -76,60 +83,35 @@ class StaffAttendanceController extends Controller
 
     public function detail($id)
     {
-        $attendance = Attendance::with(['user', 'breaks', 'requests'])
-            ->where('user_id', auth()->id())
-            ->findOrFail($id);
+        $attendance = Attendance::with(['user','breaks', 'request'])->where('user_id', auth()->id())->findOrFail($id);
 
-        return view('user.attendances.detail', compact('attendance'));
-    }
+        $pending = $attendance->request && $attendance->request->status === AttendanceRequest::STATUS_PENDING;
 
-    public function detailByDate(string $date)
-    {
-        $d = Carbon::parse($date)->startOfDay(); // 例外は 404 でOK
+        // —— 表示用フォーム値（pendingならpayload、なければDB）——
+        $payload = $pending ? ($attendance->request->payload ?? []) : [];
 
-        $attendance = Attendance::firstOrCreate([
-            'user_id'   => auth()->id(),
-            'work_date' => $d->toDateString(),
-        ]);
-
-        // 関連を読み直して詳細へ
-        $attendance->load(['user', 'breaks' => fn($q)=>$q->orderBy('start_at')]);
-
-        return view('user.attendances.detail', compact('attendance'));
-    }
-
-
-
-    public function store(Request $request, Attendance $attendance)
-    {
-        abort_if($attendance->user_id !== auth()->id(), 403);
-
-        $data = $request->validate([
-            'reason'        => ['required', 'string', 'max:2000'],
-            'clock_in_at'   => ['nullable', 'date'],
-            'clock_out_at'  => ['nullable', 'date', 'after_or_equal:clock_in_at'],
-            'breaks'        => ['nullable', 'array'],
-            'breaks.*.start_at' => ['nullable', 'date'],
-            'breaks.*.end_at'   => ['nullable', 'date','after:breaks.*.start_at'],
-        ]);
-
-        $payload = [
-            'clock_in_at'  => $data['clock_in_at'] ?? null,
-            'clock_out_at' => $data['clock_out_at'] ?? null,
-            'breaks'       => $data['breaks'] ?? [],
+          // DB値（修正前）をまず作る
+        $dbBreaks = $attendance->breaks->map(fn($b)=>[
+            'start_at' => optional($b->start_at)->format('H:i'),
+            'end_at'   => optional($b->end_at)->format('H:i'),
+        ])->values()->all();
+        
+        // フォーム値（payload を最優先 → なければ現在の打刻）
+        $form = [
+            'clock_in_at'  => $payload['clock_in_at']  ?? optional($attendance->clock_in_at)->format('H:i'),
+            'clock_out_at' => $payload['clock_out_at'] ?? optional($attendance->clock_out_at)->format('H:i'),
+            'breaks'       =>  !empty($payload['breaks']) ? array_values($payload['breaks']) : $dbBreaks,
+            'reason'       => $attendance->request?->reason ?? '',
+            'is_locked'    => $pending,
+            // 'is_pending'   => $attendance->request?->status === \App\Models\AttendanceRequest::STATUS_PENDING,
         ];
 
-        DB::transaction(function () use ($attendance, $payload, $data) {
-            AttendanceRequest::create([
-                'attendance_id' => $attendance->id,
-                'requested_by'  => auth()->id(),
-                'status'        => AttendanceRequest::STATUS_PENDING,
-                'reason'        => $data['reason'],
-                'payload'       => $payload,
-            ]);
-        });
-
-        return redirect('/requests')->with('status', '修正申請を送信しました');
+        // 休憩は常に2本分用意（不足は null で埋める）
+        while (count($form['breaks']) < 2) {
+            $form['breaks'][] = ['start_at' => null, 'end_at' => null];
+        }
+    
+        return view('user.attendances.detail', compact('attendance', 'form'));
     }
 
 

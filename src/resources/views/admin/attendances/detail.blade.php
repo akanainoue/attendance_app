@@ -35,15 +35,12 @@
         </div>
 
         {{-- 日付（年 / 月日） --}}
+        @php $d = \Illuminate\Support\Carbon::parse($attendance->work_date); @endphp
         <div class="row">
           <div class="th">日付</div>
-          <div class="td">
-            {{ optional($attendance->work_date)->format('Y年') ?? '—' }}
-          </div>
+          <div class="td">{{ $d->format('Y') }}年</div>
           <div class="tilde"></div>
-          <div class="td">
-            {{ optional($attendance->work_date)->format('n月j日') ?? '—' }}
-          </div>
+          <div class="td">{{ $d->format('n月j日') }}</div>
         </div>
 
         {{-- 出勤・退勤 --}}
@@ -53,14 +50,14 @@
             <input name="clock_in_at"
                    type="time"
                    class="time-input"
-                   value="{{ optional($attendance->clock_in_at)->format('H:i') }}">
+                   value="{{ old('clock_in_at', data_get($form,'clock_in_at', $dbIn ?? optional($attendance->clock_in_at)->format('H:i'))) }}">
           </div>
           <div class="tilde">〜</div>
           <div class="td">
             <input name="clock_out_at"
                    type="time"
                    class="time-input"
-                   value="{{ optional($attendance->clock_out_at)->format('H:i') }}">
+                   value="{{old('clock_out_at', data_get($form, 'clock_out_at', $dbOut ?? optional($attendance->clock_out_at)->format('H:i'))) }}">
           </div>
           @if ($errors->has('work_time'))
                 <p class="field-error">{{ $errors->first('work_time') }}</p>
@@ -71,21 +68,25 @@
         @php
           $br1 = $attendance->breaks[0] ?? null;
           $br2 = $attendance->breaks[1] ?? null;
+          $dbB0S = optional($br1?->start_at)->format('H:i');
+          $dbB0E = optional($br1?->end_at)  ->format('H:i');
+          $dbB1S = optional($br2?->start_at)->format('H:i');
+          $dbB1E = optional($br2?->end_at)  ->format('H:i');
         @endphp
         <div class="row">
           <div class="th">休憩</div>
           <div class="td">
             <input name="breaks[0][start_at]" type="time" class="time-input"
-                  value="{{ optional(optional($br1)->start_at)->format('H:i') }}">
+                  value="{{ old('breaks.0.start_at', data_get($form, 'breaks.0.start_at', $dbB0S)) }}">
           </div>
           <div class="tilde">〜</div>
           <div class="td">
             <input name="breaks[0][end_at]" type="time" class="time-input"
-                  value="{{ optional(optional($br1)->end_at)->format('H:i') }}">
+                  value="{{ old('breaks.0.end_at', data_get($form, 'breaks.0.end_at', $dbB0E)) }}">
           </div>
           @if ($errors->has('break_time'))
                 <p class="field-error">{{ $errors->first('break_time') }}</p>
-            @endif
+          @endif
         </div>
 
         {{-- 休憩2 --}}
@@ -93,12 +94,12 @@
           <div class="th">休憩2</div>
           <div class="td">
             <input name="breaks[1][start_at]" type="time" class="time-input"
-                  value="{{ optional(optional($br2)->start_at)->format('H:i') }}">
+                  value="{{ old('breaks.1.start_at', data_get($form, 'breaks.1.start_at', $dbB1S)) }}">
           </div>
           <div class="tilde">〜</div>
           <div class="td">
             <input name="breaks[1][end_at]" type="time" class="time-input"
-                  value="{{ optional(optional($br2)->end_at)->format('H:i') }}">
+                  value="{{ old('breaks.1.end_at', data_get($form, 'breaks.1.end_at', $dbB1E)) }}">
           </div>
         </div>
 
@@ -107,7 +108,10 @@
           <div class="th">備考</div>
           <div class="td td-span">
             <textarea name="note" class="note-input" rows="3"
-              placeholder="">{{ old('note', $attendance -> request -> reason ?? '') }}</textarea>
+              placeholder="">{{ old('reason', $form['reason'] ?? ($attendance->request->reason ?? '')) }}</textarea>
+            @error('reason')
+              <p class="field-error">{{ $message }}</p>
+            @enderror  
           </div>
         </div>
       </section>
@@ -116,7 +120,7 @@
         <button type="submit" class="btn-primary">修正</button>
       </div>
     </form>
-
   </div>
 </main>
 @endsection
+

@@ -62,34 +62,28 @@
             </thead>
             <tbody>
             @foreach ($rows as $row)
-                @php
-                // 休憩合計（分）
-                $breakMin = $row->breaks->sum(function($b){
-                    return ($b->start_at && $b->end_at)
-                    ? $b->end_at->diffInMinutes($b->start_at) : 0;
-                });
-                $breakStr = sprintf('%d:%02d', intdiv($breakMin,60), $breakMin%60);
-
-                // 勤務合計（分）= 退勤-出勤 - 休憩
-                $workMin  = ($row->clock_in_at && $row->clock_out_at)
-                           ? max(0, $row->clock_in_at->diffInMinutes($row->clock_out_at) - $breakMin)
-                           : null;
-                $totalStr = isset($workMin) ? sprintf('%d:%02d', intdiv($workMin,60), $workMin%60) : '-';
-                @endphp
+                
                 <tr>
-                    <td class="col-name">{{ $row->user->name ?? '-' }}</td>
-                    <td>{{ optional($row->clock_in_at)->format('H:i') ?? '—' }}</td>
-                    <td>{{ optional($row->clock_out_at)->format('H:i') ?? '—' }}</td>
-                    <td>{{ $breakStr }}</td>
-                    <td>{{ $totalStr }}</td>
+                    <td class="col-name">
+                        {{ $row['name'] }}
+                        @if ($row['is_pending'])
+                          <span class="badge badge-pending">申請中</span>
+                        @endif
+                    </td>
+                    <td>{{ $row['in'] }}</td>
+                    <td>{{ $row['out'] }}</td>
+                    <td>{{ $row['break'] }}</td>
+                    <td>{{ $row['total'] }}</td>
                     <td class="col-detail">
-                        <a class="link-detail" href="{{ url('/admin/attendance/'.$row->id) }}">詳細</a>
+                        <a class="link-detail" href="{{ url('/admin/attendance/'.$row['attendance_id']) }}">詳細</a>
                     </td>
                 </tr>
             @endforeach
+            
             </tbody>
             </table>
         </div>
     </div>
 </main>
 @endsection
+

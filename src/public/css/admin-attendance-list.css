@@ -114,6 +114,20 @@
     width: 32%;
 }
 
+.badge-pending {
+    display: inline-block;
+    margin-left: .4rem;
+    padding: .1rem .35rem;
+    font-size: .75rem;
+    line-height: 1;
+    border-radius: .35rem;
+    background: #fce4ec;
+    /* 薄いピンク */
+    color: #ad1457;
+    /* 濃いめピンク */
+    vertical-align: middle;
+}
+
 .col-detail {
     width: 10%;
     text-align: left;

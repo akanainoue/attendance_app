@@ -34,33 +34,33 @@
         {{-- テーブル --}}
         <div class="sheet card">
             <table class="req-table">
-            <thead>
-                <tr>
-                    <th>状態</th>
-                    <th>名前</th>
-                    <th>対象日時</th>
-                    <th>申請理由</th>
-                    <th>申請日時</th>
-                    <th>詳細</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($rows as $row)
-                {{-- $row 例:
-                ['status'=>'承認待ち','name'=>'西 伶奈','target'=>'2023/06/01',
-                'reason'=>'遅延のため','applied'=>'2023/06/02','id'=>1] --}}
-                <tr>
-                    <td><span class="badge">{{ $row['status'] }}</span></td>
-                    <td>{{ $row['name'] }}</td>
-                    <td class="mono">{{ $row['target'] }}</td>
-                    <td class="ellipsis" title="{{ $row['reason'] }}">{{ $row['reason'] }}</td>
-                    <td class="mono">{{ $row['applied'] }}</td>
-                    <td class="col-detail">
-                        <a class="link-detail" href="{{ url('/attendance/detail/'.$row['id']) }}">詳細</a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
+                <thead>
+                    <tr>
+                        <th>状態</th>
+                        <th>名前</th>
+                        <th>対象日時</th>
+                        <th>申請理由</th>
+                        <th>申請日時</th>
+                        <th>詳細</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($rows as $row)
+                    {{-- $row 例:
+                    ['status'=>'承認待ち','name'=>'西 伶奈','target'=>'2023/06/01',
+                    'reason'=>'遅延のため','applied'=>'2023/06/02','id'=>1] --}}
+                    <tr>
+                        <td><span class="badge">{{ $row['status'] }}</span></td>
+                        <td>{{ $row['name'] }}</td>
+                        <td class="mono">{{ $row['target'] }}</td>
+                        <td class="ellipsis" title="{{ $row['reason'] }}">{{ $row['reason'] }}</td>
+                        <td class="mono">{{ $row['applied'] }}</td>
+                        <td class="col-detail">
+                            <a class="link-detail" href="{{ url('/attendance/detail/'.$row['id']) }}">詳細</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>

@@ -60,7 +60,11 @@
         <tbody>
         @foreach ($rows as $r)
           <tr>
-            <td class="col-date">{{ $r['date'] }}</td>
+            <td class="col-date">{{ $r['date'] }}
+            @if ($r['pending'])
+              <span class="badge badge-pending">申請中</span>
+            @endif
+            </td>
             <td>{{ $r['in'] }}</td>
             <td>{{ $r['out'] }}</td>
             <td>{{ $r['break'] }}</td>
@@ -80,13 +84,14 @@
 
     {{-- 右下：CSV出力 --}}
     <div class="export-area">
-      <form method="GET" action="{{ url('/admin/attendance/staff/'.$user->id.'/csv') }}">
+      <form method="GET" action="{{ url('/admin/attendance/staff/'.$user->id) }}">
         <input type="hidden" name="month" value="{{ $month->format('Y-m') }}">
+        <input type="hidden" name="export" value="csv">
         <button type="submit" class="btn-export">CSV出力</button>
       </form>
     </div>
-
   </div>
 </main>
 @endsection
+
 

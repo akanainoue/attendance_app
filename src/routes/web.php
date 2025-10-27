@@ -35,6 +35,9 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/attendance/list',               [StaffAttendanceController::class, 'index']);        // 勤怠一覧
     Route::get('/attendance/detail/{id}',        [StaffAttendanceController::class, 'detail']);         // 勤怠詳細
     Route::post('/attendance/detail/{id}/notes', [StaffRequestController::class, 'upsert']);      //備考
+    // ★ 日付→IDを解決してリダイレクト
+    Route::get('/attendance/detail/date/{ymd}', [StaffRequestController::class, 'upsertByDate'])
+        ->where('ymd', '\d{4}-\d{2}-\d{2}');
     Route::get('/stamp_correction_request/list', [StaffAttendanceController::class, 'requestIndex']); // 申請一覧
 });
 
@@ -63,4 +66,6 @@ Route::prefix('admin')->group(function () {
         Route::patch('requests/{id}/accept',                    [AdminRequestController::class, 'accept']);
     });
 });
+
+
 

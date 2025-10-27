@@ -60,18 +60,22 @@
             @foreach ($rows as $row)
                 {{-- $row: ['date'=>'06/01(木)','in'=>'09:00','out'=>'18:00','break'=>'1:00','total'=>'8:00','id'=>1] 想定 --}}
                 <tr>
-                    <td class="col-date">{{ $row['date'] }}</td>
+                    <td class="col-date">
+                        {{ $row['date'] }}
+                        @if(!empty($row['is_pending']))
+                          <span class="badge-pending" aria-label="申請中">申請中</span>
+                        @endif
+                    </td>
                     <td>{{ $row['in'] ?? '-' }}</td>
                     <td>{{ $row['out'] ?? '-' }}</td>
                     <td>{{ $row['break'] ?? '0:00' }}</td>
                     <td>{{ $row['total'] ?? '-' }}</td>
                     <td>
-                        <!-- @php
-                        $link = $row['id']
-                                ? url('/attendance/detail/'.$row['id'])
-                                : url('/attendance/detail/date/'.$row['ymd']);
-                        @endphp -->
-                        <a class="link-detail" href="{{ url('/attendance/detail/'.$row['id']) }}">詳細</a>
+                        @if (!empty($row['id']))
+                          <a class="link-detail" href="{{ url('/attendance/detail/'.$row['id']) }}">詳細</a>
+                        @else
+                          <a class="link-detail" href="{{ url('/attendance/detail/date/'.$row['ymd']) }}">詳細</a>
+                        @endif
                     </td>
                 </tr>
             @endforeach

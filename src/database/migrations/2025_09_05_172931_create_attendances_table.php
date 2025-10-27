@@ -22,7 +22,6 @@ class CreateAttendancesTable extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'work_date']); // 1日1件
-            // $table->index(['user_id', 'work_date']);
         });
     }
 

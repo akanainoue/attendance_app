@@ -30,7 +30,6 @@ class PunchController extends Controller
     public function clockIn()
     {
         $now = now()->seconds(0);  // ★ 秒を落とす
-        // $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         $att = Attendance::firstOrCreate([
             'user_id'   => auth()->id(),
             'work_date' => today(),
@@ -40,11 +39,9 @@ class PunchController extends Controller
         return redirect('/attendance'); // ← back() ではなく
     }
     
-
     public function breakStart()
     {
         $now = now()->seconds(0);  // ★ 秒を落とす
-        // $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         $att = Attendance::firstOrCreate([
             'user_id'   => auth()->id(),
             'work_date' => today(),
@@ -58,7 +55,6 @@ class PunchController extends Controller
     public function breakEnd()
     {
         $now = now()->seconds(0);  // ★ 秒を落とす
-        // $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         $att = Attendance::firstOrCreate([
             'user_id'   => auth()->id(),
             'work_date' => today(),
@@ -72,7 +68,6 @@ class PunchController extends Controller
     public function clockOut()
     {
         $now = now()->seconds(0);  // ★ 秒を落とす
-        // $att = Attendance::where('user_id',auth()->id())->whereDate('work_date',today())->firstOrFail();
         $att = Attendance::firstOrCreate([
             'user_id'   => auth()->id(),
             'work_date' => today(),

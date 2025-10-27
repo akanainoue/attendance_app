@@ -40,7 +40,7 @@ class Attendance extends Model
 
     public function request()
     {
-        return $this->hasOne(AttendanceRequest::class, 'attendance_id');
+        return $this->hasOne(AttendanceRequest::class)->latestOfMany();
     }
 
     // 今のステータス（画面の表示切替に利用）

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-// use App\Models\Attendance;
 use App\Models\AttendanceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class AdminRequestController extends Controller
 {
@@ -48,7 +48,7 @@ class AdminRequestController extends Controller
             return [
                 'id'      => $r->id,
                 'status'  => $r->status === AttendanceRequest::STATUS_APPROVED ? '承認済み' : '承認待ち',
-                'name'    => $r->requestedBy?->name ?? '―',
+                'name'    => $r->requester?->name ?? '―',
                 'target'  => $workDate ? $workDate->format('Y/m/d') : '―',
                 'reason'  => $r->reason ?? '―',
                 'applied' => $r->created_at?->format('Y/m/d') ?? '―',
@@ -66,49 +66,76 @@ class AdminRequestController extends Controller
      */
     public function showRequest($attendance_correct_request)
     {
-        // 申請＋関連（attendance.user / attendance.breaks）を取得
+        // 申請＋関連（ユーザー、勤怠、休憩）
         $req = AttendanceRequest::with([
-                'attendance.user',
-                'attendance.breaks' => fn($q) => $q->orderBy('start_at'),
-            ])->findOrFail($attendance_correct_request);
+            'attendance.user',
+            'attendance.breaks',
+        ])->findOrFail($attendance_correct_request);
 
-        $att  = $req->attendance;
-        $user = $att?->user;
+        $att = $req->attendance; // 勤怠レコード（存在しないケースにも一応備える）
 
-        // フォーマッタ（文字列/Carbon/null を安全に H:i へ）
-        $fmt = function ($dt) {
-            if (empty($dt)) return '-';
-            return ($dt instanceof Carbon)
-                ? $dt->format('H:i')
-                : Carbon::parse($dt)->format('H:i');
+        // === 日付の決定 ===
+        $ymd  = optional($att?->work_date)?->toDateString()
+              ?: Arr::get($req->payload, 'date')                 // payloadにdateを入れている場合
+              ?: $req->created_at->toDateString();               // 最後の保険
+        $date = Carbon::parse($ymd);
+
+        // === フォーマッタ（常に H:i を返す） ===
+        $hm = function ($v) {
+            if (!$v) return '—';
+            if (is_string($v) && preg_match('/^\d{2}:\d{2}$/', $v)) {
+                return $v; // 既に H:i
+            }
+            try {
+                return Carbon::parse($v)->format('H:i');
+            } catch (\Throwable $e) {
+                return '—';
+            }
         };
 
-        // 勤務日
-        $work = $att?->work_date;
-        $workC = $work instanceof Carbon ? $work : ($work ? Carbon::parse($work) : null);
+        // === DB側の現在値（フォールバック） ===
+        $dbIn  = $hm($att?->clock_in_at);
+        $dbOut = $hm($att?->clock_out_at);
 
-        // 休憩（最大2本想定）
-        $breaks = $att?->breaks ?? collect();
-        $b1 = $breaks->get(0);
-        $b2 = $breaks->get(1);
+        $dbBreaks = $att
+            ? $att->breaks->map(fn ($b) => [
+                'start_at' => $hm($b->start_at),
+                'end_at'   => $hm($b->end_at),
+            ])->values()->all()
+            : [];
 
-        // ビューへ
+        // === payload 優先で表示値を作る（なければDB値） ===
+        $payload = (array) ($req->payload ?? []);
+        $pBreaks = Arr::get($payload, 'breaks', []);
+
+        $in  = $hm(Arr::get($payload, 'clock_in_at',  $dbIn));
+        $out = $hm(Arr::get($payload, 'clock_out_at', $dbOut));
+
+        $breaks = $pBreaks ? array_values($pBreaks) : $dbBreaks;
+        // 休憩は2本分に揃える
+        while (count($breaks) < 2) $breaks[] = ['start_at' => null, 'end_at' => null];
+
+        $b1s = $hm($breaks[0]['start_at'] ?? null);
+        $b1e = $hm($breaks[0]['end_at']   ?? null);
+        $b2s = $hm($breaks[1]['start_at'] ?? null);
+        $b2e = $hm($breaks[1]['end_at']   ?? null);
+
+        // 名前
+        $name = $att?->user?->name ?? '—';
+
         return view('admin.requests.review', [
             'requestId' => $req->id,
-            'approved'  => $req->status === 'approved', // ステータスは実テーブルの値に合わせて
-
-            'name'      => $user?->name ?? '—',
-            'dateYear'  => $workC?->format('Y') ?? '',
-            'dateMd'    => $workC?->format('n月j日') ?? '',
-
-            'in'        => $fmt($att?->clock_in_at),
-            'out'       => $fmt($att?->clock_out_at),
-            'b1s'       => $fmt(optional($b1)->start_at),
-            'b1e'       => $fmt(optional($b1)->end_at),
-            'b2s'       => $fmt(optional($b2)->start_at),
-            'b2e'       => $fmt(optional($b2)->end_at),
-
-            'note'      => $req->reason ?? '—',
+            'approved'  => $req->status === AttendanceRequest::STATUS_APPROVED,
+            'name'      => $name,
+            'dateYear'  => $date->format('Y'),
+            'dateMd'    => $date->format('n月j日'),
+            'in'        => $in,
+            'out'       => $out,
+            'b1s'       => $b1s,
+            'b1e'       => $b1e,
+            'b2s'       => $b2s,
+            'b2e'       => $b2e,
+            'note'      => $req->reason ?? '',
         ]);
     }
 

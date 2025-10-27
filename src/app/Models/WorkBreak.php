@@ -27,3 +27,6 @@ class WorkBreak extends Model
 }
 
 // Attendance / Break に日時キャストを付けておくと、自動で Carbon インスタンスになります。
+
+
+
